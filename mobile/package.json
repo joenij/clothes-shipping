@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "cd ios && pod install"
+    "postinstall": "node -e \"if(process.platform === 'darwin') { require('child_process').execSync('cd ios && pod install', {stdio: 'inherit'}); }\""
   },
   "dependencies": {
     "react": "18.2.0",
@@ -67,5 +67,13 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "resolutions": {
+    "react": "18.2.0",
+    "@types/react": "^18.0.24"
+  },
+  "overrides": {
+    "react": "18.2.0",
+    "@types/react": "^18.0.24"
   }
 }

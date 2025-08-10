@@ -7,7 +7,7 @@ import { refreshToken, clearAuth } from '../store/slices/authSlice';
 // API Base URL
 const API_BASE_URL = __DEV__ 
   ? 'http://localhost:3001/api'  // Development
-  : 'https://api.itsjn.com/api';  // Production
+  : 'https://api.jneoutlet.com/api';  // Production
 
 // Create axios instance
 const apiClient = axios.create({
