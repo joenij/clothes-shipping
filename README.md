@@ -1,16 +1,24 @@
-# Clothes Shipping E-commerce Platform
+# JNE Outlet - Complete E-commerce Platform
 
-A complete e-commerce platform for selling clothes from China to EU, Brazil, and Namibia. Built with React Native mobile app, Node.js backend, and PostgreSQL database.
+A comprehensive e-commerce platform for selling premium fashion from China to worldwide markets. Features mobile apps, web shopping, admin panel, and supplier portal with complete production deployment.
+
+## 🌐 Live Platform
+- **Main Website**: [jneoutlet.com](https://jneoutlet.com) - Company landing page
+- **Shop**: [shop.jneoutlet.com](https://shop.jneoutlet.com) - Customer shopping experience
+- **Admin**: [admin.jneoutlet.com](https://admin.jneoutlet.com) - Management dashboard
+- **Suppliers**: [suppliers.jneoutlet.com](https://suppliers.jneoutlet.com) - Supplier portal
+- **API**: [api.jneoutlet.com](https://api.jneoutlet.com) - REST API backend
 
 ## 🚀 Features
 
-- **Mobile App**: React Native iOS/Android app with Temu/Shein-like interface
+- **Mobile Apps**: React Native iOS/Android apps with Temu/Shein-like interface
+- **Customer Website**: Full e-commerce web experience 
 - **Multi-language**: English, Portuguese, German, French, Spanish
 - **Multi-currency**: EUR, BRL, NAD with live exchange rates
-- **Payment Processing**: Stripe, PayPal, Google Pay integration
-- **Shipping**: DHL integration with real-time tracking
-- **Admin Panel**: React-based inventory and order management
-- **Supplier Portal**: Onboarding and management system
+- **Payment Processing**: Stripe integration with webhooks
+- **Shipping**: DHL API integration with real-time tracking
+- **Admin Panel**: Complete inventory and order management
+- **Supplier Portal**: Supplier onboarding and management system
 
 ## 🛠 Tech Stack
 
@@ -22,19 +30,11 @@ A complete e-commerce platform for selling clothes from China to EU, Brazil, and
 - **DHL API** for shipping and tracking
 - **JWT** authentication with refresh tokens
 
-### Mobile App
-- **React Native 0.73.2**
-- **Redux Toolkit** for state management
-- **React Navigation** for routing
-- **i18next** for internationalization
-- **Stripe React Native** for payments
-- **Push notifications** with Firebase
-
-### Admin Panel
-- **React** with modern hooks
-- **Material-UI** components
-- **Chart.js** for analytics
-- **Real-time updates** with WebSocket
+### Frontend Applications
+- **Customer Website**: React with Redux Toolkit
+- **Mobile Apps**: React Native 0.73.2 with Redux
+- **Admin Panel**: React with Material-UI
+- **Supplier Portal**: React with modern hooks
 
 ## 📋 Prerequisites
 
@@ -49,45 +49,36 @@ A complete e-commerce platform for selling clothes from China to EU, Brazil, and
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
-cd ClothesShipping
+git clone https://github.com/joenij/clothes-shipping.git
+cd clothes-shipping
 ```
 
-### 2. Backend Setup
+### 2. Install All Dependencies
+```bash
+npm install
+npm run install:all
+```
+
+### 3. Backend Setup
 ```bash
 cd backend
-npm install
 cp .env.example .env
 # Edit .env with your credentials
 npm run migrate
 npm run seed
-npm run dev
 ```
 
-### 3. Database Setup
+### 4. Start All Services
 ```bash
-# Create PostgreSQL database
-createdb clothesapp
-
-# Run migrations
-psql clothesapp < database/schema.sql
-```
-
-### 4. Mobile App Setup
-```bash
-cd mobile
-npm install
-npx react-native run-android
-# or
-npx react-native run-ios
-```
-
-### 5. Admin Panel Setup
-```bash
-cd admin-panel
-npm install
+# From root directory - starts all applications
 npm start
 ```
+
+This will start:
+- Backend API server (localhost:3001)
+- Customer website (localhost:3000)
+- Mobile app Metro bundler (localhost:8081)
+- Admin panel (localhost:3002)
 
 ## ⚙️ Environment Variables
 
@@ -127,20 +118,60 @@ SMTP_PASSWORD=your_app_password
 
 ### Running on Device
 ```bash
-# Android
-npx react-native run-android --device
-
-# iOS (macOS only)
-npx react-native run-ios --device
+cd mobile
+npm run android --device  # Android
+npm run ios --device      # iOS (macOS only)
 ```
 
 ### Building for Production
 ```bash
-# Android
-cd android && ./gradlew assembleRelease
+cd mobile
+npm run android:release   # Android APK
+npm run ios:release       # iOS IPA
+```
 
-# iOS
-npx react-native run-ios --configuration Release
+## 🌍 Domain Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Mobile Apps   │    │ Customer Shop   │    │   Admin Panel   │    │   Backend API   │
+│  (App Stores)   │────│shop.jneoutlet.com────│admin.jneoutlet.com───│api.jneoutlet.com│
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+                                                      │                        │
+                        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+                        │ Main Website    │    │Supplier Portal  │    │   PostgreSQL    │
+                        │ jneoutlet.com   │    │suppliers.jneoutlet│   │    Database     │
+                        └─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+## 🚀 Production Deployment
+
+Complete deployment guide available in [DEPLOYMENT.md](DEPLOYMENT.md) including:
+- Ubuntu/CentOS server setup
+- Docker configuration
+- Nginx configurations for all domains
+- SSL certificates with Let's Encrypt
+- PM2 process management
+- Database migrations
+- Security hardening
+
+## 🔧 Development Commands
+
+### Root Directory
+```bash
+npm start              # Start all applications
+npm test               # Run all tests
+npm run lint           # Lint all projects
+npm run build          # Build for production
+npm run docker:up      # Start with Docker
+```
+
+### Individual Applications
+```bash
+npm run start:backend     # API server only
+npm run start:customer    # Customer website only
+npm run start:mobile      # Mobile app only
+npm run start:admin       # Admin panel only
 ```
 
 ## 🗄️ Database Schema
@@ -149,7 +180,7 @@ Key tables:
 - `users` - Customer accounts with multi-language preferences
 - `products` - Product catalog with variants and localization
 - `orders` - Order management with payment and shipping status
-- `suppliers` - Chinese supplier information and ratings
+- `suppliers` - Supplier information and ratings
 - `categories` - Multi-language product categories
 - `shipping_zones` - Regional shipping rates and policies
 
@@ -161,7 +192,6 @@ Key tables:
 - **SQL Injection Protection** with parameterized queries
 - **XSS Prevention** with helmet.js
 - **HTTPS Enforcement** in production
-- **Password Hashing** with bcrypt (12 rounds)
 - **PCI DSS Compliance** through Stripe
 
 ## 🚚 Shipping Integration
@@ -171,7 +201,7 @@ Key tables:
 - Real-time tracking
 - Address validation
 - Customs declaration
-- Multiple service types (Express, Standard, Economy)
+- Multiple service types
 - Rate calculation
 
 ### Shipping Zones
@@ -186,86 +216,6 @@ Key tables:
 - **Google Pay** (Android)
 - **PayPal** (Web integration)
 - **Saved Payment Methods** for returning customers
-
-### Security
-- **3D Secure** support
-- **Webhook verification** for payment events
-- **PCI DSS compliance** through Stripe
-- **Fraud detection** built-in
-
-## 🌍 Internationalization
-
-### Languages
-- English (default)
-- Portuguese (Brazil)
-- German (Germany)
-- French (France)
-- Spanish (Spain)
-
-### Currencies
-- EUR (European Union)
-- BRL (Brazil)
-- NAD (Namibia)
-
-## 📊 Admin Features
-
-- **Dashboard** with sales analytics
-- **Product Management** with bulk operations
-- **Order Processing** with status tracking
-- **Inventory Management** with alerts
-- **Supplier Management** with performance metrics
-- **Customer Support** with chat integration
-- **Financial Reports** with export options
-
-## 🔧 Development Commands
-
-### Backend
-```bash
-npm run dev          # Development server
-npm run test         # Run tests
-npm run lint         # ESLint
-npm run migrate      # Database migrations
-npm run seed         # Sample data
-```
-
-### Mobile App
-```bash
-npm start           # Metro bundler
-npm run android     # Android development
-npm run ios         # iOS development (macOS only)
-npm test            # Run tests
-npm run lint        # ESLint
-```
-
-## 🚀 Deployment
-
-### Backend Deployment
-1. Set NODE_ENV=production
-2. Update database credentials
-3. Configure Redis connection
-4. Set up SSL certificates
-5. Configure nginx reverse proxy
-6. Start with PM2
-
-### Mobile App Deployment
-1. Update API endpoints
-2. Configure app signing
-3. Build release APK/IPA
-4. Submit to app stores
-5. Configure push notifications
-
-## 🐛 Troubleshooting
-
-### Common Issues
-- **Database connection**: Check PostgreSQL service and credentials
-- **API errors**: Verify environment variables and API keys
-- **React Native build**: Clear cache with `npx react-native start --reset-cache`
-- **iOS build**: Run `cd ios && pod install`
-
-### Logging
-- Backend logs: `logs/combined.log` and `logs/error.log`
-- Mobile app: React Native debugger or Flipper
-- Database: PostgreSQL logs
 
 ## 📚 API Documentation
 
@@ -294,22 +244,6 @@ GET  /api/orders/:id       # Order details
 PUT  /api/orders/:id       # Update order status
 ```
 
-### Payment Endpoints
-```
-POST /api/payments/create-intent    # Create payment intent
-POST /api/payments/confirm         # Confirm payment
-GET  /api/payments/payment-methods # Saved payment methods
-POST /api/payments/webhook         # Stripe webhook
-```
-
-### Shipping Endpoints
-```
-GET  /api/shipping/zones           # Shipping zones
-POST /api/shipping/calculate       # Calculate shipping
-GET  /api/shipping/track/:number   # Track shipment
-POST /api/shipping/create-shipment # Create shipment (admin)
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -324,9 +258,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- Email: support@itsjn.com
-- Documentation: [docs.itsjn.com](https://docs.itsjn.com)
-- Issues: [GitHub Issues](https://github.com/your-repo/issues)
+- Email: support@jneoutlet.com
+- Issues: [GitHub Issues](https://github.com/joenij/clothes-shipping/issues)
 
 ## 🗺️ Roadmap
 
@@ -335,6 +268,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Loyalty program
 - [ ] Wholesale portal
 - [ ] Advanced analytics
-- [ ] Mobile web PWA
+- [ ] PWA support
 - [ ] Additional payment methods
 - [ ] More shipping carriers
