@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: clothesapp-postgres
+    environment:
+      POSTGRES_DB: clothesapp
+      POSTGRES_USER: clothesapp_user
+      POSTGRES_PASSWORD: dev_password_2024
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: clothesapp-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Backend API
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: clothesapp-backend
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: clothesapp
+      DB_USER: clothesapp_user
+      DB_PASSWORD: dev_password_2024
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secure-jwt-secret-for-development-only
+      JWT_REFRESH_SECRET: your-super-secure-refresh-secret-for-development-only
+      STRIPE_SECRET_KEY: sk_test_your_stripe_secret_key_here
+      STRIPE_PUBLISHABLE_KEY: pk_test_your_stripe_publishable_key_here
+      STRIPE_WEBHOOK_SECRET: whsec_your_stripe_webhook_secret_here
+      DHL_API_KEY: your_dhl_api_key_here
+      DHL_API_SECRET: your_dhl_api_secret_here
+      DHL_ACCOUNT_NUMBER: your_dhl_account_number_here
+      DHL_BASE_URL: https://api-sandbox.dhl.com
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Admin Panel
+  admin:
+    build:
+      context: ./admin-panel
+      dockerfile: Dockerfile
+    container_name: clothesapp-admin
+    ports:
+      - "3002:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:3001/api
+      REACT_APP_STRIPE_PUBLISHABLE_KEY: pk_test_your_stripe_publishable_key_here
+    depends_on:
+      - backend
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+    volumes:
+      - ./admin-panel:/app
+      - /app/node_modules
+
+  # Nginx Reverse Proxy (optional for production-like setup)
+  nginx:
+    image: nginx:alpine
+    container_name: clothesapp-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - backend
+      - admin
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+
+  # Mailhog (for email testing in development)
+  mailhog:
+    image: mailhog/mailhog
+    container_name: clothesapp-mailhog
+    ports:
+      - "1025:1025"   # SMTP server
+      - "8025:8025"   # Web UI
+    networks:
+      - clothesapp-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  clothesapp-network:
+    driver: bridge

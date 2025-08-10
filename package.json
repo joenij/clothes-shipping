@@ -1,0 +1,75 @@
+{
+  "name": "clothes-shipping-monorepo",
+  "version": "1.0.0",
+  "description": "E-commerce platform for clothes shipping from China",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "setup:dev": "bash scripts/setup-dev.sh",
+    "setup:dev:win": "scripts\\setup-dev.bat",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:mobile\" \"npm run start:admin\" \"npm run start:customer\"",
+    "start:backend": "cd backend && npm run dev",
+    "start:mobile": "cd mobile && npm start",
+    "start:admin": "cd admin-panel && npm start",
+    "start:customer": "cd customer-website && npm start",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "db:migrate": "cd backend && npm run migrate",
+    "db:seed": "cd backend && npm run seed",
+    "db:reset": "docker-compose down -v && docker-compose up -d postgres && sleep 10 && npm run db:migrate && npm run db:seed",
+    "test": "npm run test:backend && npm run test:mobile && npm run test:customer",
+    "test:backend": "cd backend && npm test",
+    "test:mobile": "cd mobile && npm test",
+    "test:customer": "cd customer-website && npm test",
+    "lint": "npm run lint:backend && npm run lint:mobile && npm run lint:customer",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:mobile": "cd mobile && npm run lint",
+    "lint:customer": "cd customer-website && npm run lint",
+    "build": "npm run build:backend && npm run build:admin && npm run build:customer",
+    "build:backend": "cd backend && npm run build",
+    "build:admin": "cd admin-panel && npm run build",
+    "build:customer": "cd customer-website && npm run build",
+    "build:mobile": "cd mobile && npm run android:release",
+    "clean": "npm run clean:backend && npm run clean:mobile && npm run clean:admin && npm run clean:customer",
+    "clean:backend": "cd backend && rm -rf node_modules && npm install",
+    "clean:mobile": "cd mobile && rm -rf node_modules && npm install",
+    "clean:admin": "cd admin-panel && rm -rf node_modules && npm install",
+    "clean:customer": "cd customer-website && rm -rf node_modules && npm install",
+    "postinstall": "npm run install:all",
+    "install:all": "concurrently \"cd backend && npm install\" \"cd mobile && npm install\" \"cd admin-panel && npm install\" \"cd customer-website && npm install\"",
+    "update:all": "npm update && cd backend && npm update && cd ../mobile && npm update && cd ../admin-panel && npm update && cd ../customer-website && npm update"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  },
+  "workspaces": [
+    "backend",
+    "mobile",
+    "admin-panel",
+    "customer-website"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "ecommerce",
+    "react-native",
+    "nodejs",
+    "clothing",
+    "shipping",
+    "stripe",
+    "dhl"
+  ],
+  "author": "Clothes Shipping Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joenij/clothes-shipping.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joenij/clothes-shipping/issues"
+  },
+  "homepage": "https://github.com/joenij/clothes-shipping#readme"
+}
