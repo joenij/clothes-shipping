@@ -35,7 +35,6 @@
     "clean:mobile": "cd mobile && rm -rf node_modules && npm install",
     "clean:admin": "cd admin-panel && rm -rf node_modules && npm install",
     "clean:customer": "cd customer-website && rm -rf node_modules && npm install",
-    "postinstall": "npm run install:all",
     "install:all": "concurrently \"cd backend && npm install\" \"cd mobile && npm install\" \"cd admin-panel && npm install\" \"cd customer-website && npm install\"",
     "update:all": "npm update && cd backend && npm update && cd ../mobile && npm update && cd ../admin-panel && npm update && cd ../customer-website && npm update"
   },

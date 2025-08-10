@@ -8,12 +8,12 @@ This guide provides comprehensive instructions for deploying the Clothes Shippin
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Mobile App    │    │ Customer Shop   │    │   Admin Panel   │    │   Backend API   │
-│  (App Stores)   │────│ shop.itsjn.com  │────│ admin.itsjn.com │────│ api.itsjn.com   │
+│  (App Stores)   │────│ shop.jneoutlet.com  │────│ admin.jneoutlet.com │────│ api.jneoutlet.com   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                       │                        │
                         ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
                         │ Main Website    │    │Supplier Portal  │    │   PostgreSQL    │
-                        │   itsjn.com     │    │suppliers.itsjn  │    │    Database     │
+                        │   jneoutlet.com     │    │suppliers.itsjn  │    │    Database     │
                         └─────────────────┘    └─────────────────┘    └─────────────────┘
                                                                               │
                                                ┌─────────────────┐    ┌─────────────────┐
@@ -126,12 +126,12 @@ curl http://localhost
 ### DNS Configuration
 Configure your DNS records:
 ```
-itsjn.com             A    YOUR_SERVER_IP
-www.itsjn.com         A    YOUR_SERVER_IP
-shop.itsjn.com        A    YOUR_SERVER_IP
-api.itsjn.com         A    YOUR_SERVER_IP
-admin.itsjn.com       A    YOUR_SERVER_IP
-suppliers.itsjn.com   A    YOUR_SERVER_IP
+jneoutlet.com             A    YOUR_SERVER_IP
+www.jneoutlet.com         A    YOUR_SERVER_IP
+shop.jneoutlet.com        A    YOUR_SERVER_IP
+api.jneoutlet.com         A    YOUR_SERVER_IP
+admin.jneoutlet.com       A    YOUR_SERVER_IP
+suppliers.jneoutlet.com   A    YOUR_SERVER_IP
 ```
 
 ### SSL Certificates
@@ -141,7 +141,7 @@ suppliers.itsjn.com   A    YOUR_SERVER_IP
 sudo apt install -y certbot python3-certbot-nginx
 
 # Obtain SSL certificates
-sudo certbot --nginx -d itsjn.com -d www.itsjn.com -d shop.itsjn.com -d api.itsjn.com -d admin.itsjn.com -d suppliers.itsjn.com
+sudo certbot --nginx -d jneoutlet.com -d www.jneoutlet.com -d shop.jneoutlet.com -d api.jneoutlet.com -d admin.jneoutlet.com -d suppliers.jneoutlet.com
 
 # Test auto-renewal
 sudo certbot renew --dry-run
@@ -208,7 +208,7 @@ DHL_BASE_URL=https://api.dhl.com
 # Email (production SMTP)
 SMTP_HOST=smtp.yourdomain.com
 SMTP_PORT=587
-SMTP_USER=noreply@itsjn.com
+SMTP_USER=noreply@jneoutlet.com
 SMTP_PASSWORD=YOUR_EMAIL_PASSWORD
 SMTP_SECURE=true
 
@@ -221,9 +221,9 @@ ENCRYPTION_SALT=your-encryption-salt
 HMAC_SECRET=your-hmac-secret
 
 # URLs
-FRONTEND_URL=https://admin.itsjn.com
-ADMIN_URL=https://admin.itsjn.com
-MOBILE_APP_URL=https://app.itsjn.com
+FRONTEND_URL=https://admin.jneoutlet.com
+ADMIN_URL=https://admin.jneoutlet.com
+MOBILE_APP_URL=https://app.jneoutlet.com
 
 # API Keys
 EXCHANGE_RATE_API_KEY=your_exchange_rate_api_key
@@ -237,7 +237,7 @@ UPLOAD_DIR=/home/clothesapp/uploads
 MAX_FILE_SIZE=10MB
 
 # CORS
-CORS_ORIGIN=https://admin.itsjn.com,https://app.itsjn.com
+CORS_ORIGIN=https://admin.jneoutlet.com,https://app.jneoutlet.com
 ```
 
 ```bash
@@ -256,11 +256,11 @@ pm2 startup
 
 ```bash
 # Create main website directory
-sudo mkdir -p /var/www/itsjn.com
+sudo mkdir -p /var/www/jneoutlet.com
 
 # Copy landing page files
-sudo cp -r landing-page/* /var/www/itsjn.com/
-sudo chown -R www-data:www-data /var/www/itsjn.com
+sudo cp -r landing-page/* /var/www/jneoutlet.com/
+sudo chown -R www-data:www-data /var/www/jneoutlet.com
 ```
 
 ### 4. Customer Shop Deployment
@@ -272,16 +272,16 @@ cd customer-website
 npm ci
 
 # Create production build environment
-echo "REACT_APP_API_URL=https://api.itsjn.com/api" > .env.production
+echo "REACT_APP_API_URL=https://api.jneoutlet.com/api" > .env.production
 echo "REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_LIVE_KEY" >> .env.production
 
 # Build for production
 npm run build
 
 # Copy build files to web root
-sudo mkdir -p /var/www/shop.itsjn.com
-sudo cp -r build/* /var/www/shop.itsjn.com/
-sudo chown -R www-data:www-data /var/www/shop.itsjn.com
+sudo mkdir -p /var/www/shop.jneoutlet.com
+sudo cp -r build/* /var/www/shop.jneoutlet.com/
+sudo chown -R www-data:www-data /var/www/shop.jneoutlet.com
 ```
 
 ### 5. Admin Panel Deployment
@@ -293,16 +293,16 @@ cd ../admin-panel
 npm ci
 
 # Create production build environment
-echo "REACT_APP_API_URL=https://api.itsjn.com/api" > .env.production
+echo "REACT_APP_API_URL=https://api.jneoutlet.com/api" > .env.production
 echo "REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_LIVE_KEY" >> .env.production
 
 # Build for production
 npm run build
 
 # Copy build files to web root
-sudo mkdir -p /var/www/admin.itsjn.com
-sudo cp -r build/* /var/www/admin.itsjn.com/
-sudo chown -R www-data:www-data /var/www/admin.itsjn.com
+sudo mkdir -p /var/www/admin.jneoutlet.com
+sudo cp -r build/* /var/www/admin.jneoutlet.com/
+sudo chown -R www-data:www-data /var/www/admin.jneoutlet.com
 ```
 
 ### 6. Supplier Portal Deployment
@@ -314,15 +314,15 @@ cd ../supplier-portal
 npm ci
 
 # Create production build environment
-echo "REACT_APP_API_URL=https://api.itsjn.com/api" > .env.production
+echo "REACT_APP_API_URL=https://api.jneoutlet.com/api" > .env.production
 
 # Build for production
 npm run build
 
 # Copy build files to web root
-sudo mkdir -p /var/www/suppliers.itsjn.com
-sudo cp -r build/* /var/www/suppliers.itsjn.com/
-sudo chown -R www-data:www-data /var/www/suppliers.itsjn.com
+sudo mkdir -p /var/www/suppliers.jneoutlet.com
+sudo cp -r build/* /var/www/suppliers.jneoutlet.com/
+sudo chown -R www-data:www-data /var/www/suppliers.jneoutlet.com
 ```
 
 ### 7. Nginx Configuration
@@ -331,23 +331,23 @@ Create Nginx configuration files:
 
 #### API Configuration
 ```bash
-sudo nano /etc/nginx/sites-available/api.itsjn.com
+sudo nano /etc/nginx/sites-available/api.jneoutlet.com
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name api.itsjn.com;
+    server_name api.jneoutlet.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name api.itsjn.com;
+    server_name api.jneoutlet.com;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/api.itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/api.jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.jneoutlet.com/privkey.pem;
     
     # Security headers
     add_header X-Frame-Options DENY;
@@ -388,26 +388,26 @@ server {
 
 #### Admin Panel Configuration
 ```bash
-sudo nano /etc/nginx/sites-available/admin.itsjn.com
+sudo nano /etc/nginx/sites-available/admin.jneoutlet.com
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name admin.itsjn.com;
+    server_name admin.jneoutlet.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name admin.itsjn.com;
+    server_name admin.jneoutlet.com;
 
-    root /var/www/admin.itsjn.com;
+    root /var/www/admin.jneoutlet.com;
     index index.html index.htm;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/admin.itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/admin.itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/admin.jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/admin.jneoutlet.com/privkey.pem;
 
     # Security headers
     add_header X-Frame-Options DENY;
@@ -437,26 +437,26 @@ server {
 
 #### Customer Shop Configuration
 ```bash
-sudo nano /etc/nginx/sites-available/shop.itsjn.com
+sudo nano /etc/nginx/sites-available/shop.jneoutlet.com
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name shop.itsjn.com;
+    server_name shop.jneoutlet.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name shop.itsjn.com;
+    server_name shop.jneoutlet.com;
 
-    root /var/www/shop.itsjn.com;
+    root /var/www/shop.jneoutlet.com;
     index index.html index.htm;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/shop.itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/shop.itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/shop.jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/shop.jneoutlet.com/privkey.pem;
 
     # Security headers
     add_header X-Frame-Options DENY;
@@ -505,35 +505,35 @@ server {
 
 #### Main Website Configuration (Landing Page)
 ```bash
-sudo nano /etc/nginx/sites-available/itsjn.com
+sudo nano /etc/nginx/sites-available/jneoutlet.com
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name itsjn.com www.itsjn.com;
-    return 301 https://itsjn.com$request_uri;
+    server_name jneoutlet.com www.jneoutlet.com;
+    return 301 https://jneoutlet.com$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name www.itsjn.com;
-    return 301 https://itsjn.com$request_uri;
+    server_name www.jneoutlet.com;
+    return 301 https://jneoutlet.com$request_uri;
     
-    ssl_certificate /etc/letsencrypt/live/itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jneoutlet.com/privkey.pem;
 }
 
 server {
     listen 443 ssl http2;
-    server_name itsjn.com;
+    server_name jneoutlet.com;
 
-    root /var/www/itsjn.com;
+    root /var/www/jneoutlet.com;
     index index.html index.htm;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jneoutlet.com/privkey.pem;
 
     # Security headers
     add_header X-Frame-Options DENY;
@@ -544,12 +544,12 @@ server {
 
     # Redirect shop traffic to shop subdomain
     location /shop {
-        return 301 https://shop.itsjn.com$request_uri;
+        return 301 https://shop.jneoutlet.com$request_uri;
     }
     
     # Redirect old shop paths
     location ~ ^/(products|cart|checkout|categories) {
-        return 301 https://shop.itsjn.com$request_uri;
+        return 301 https://shop.jneoutlet.com$request_uri;
     }
 
     # Main website content
@@ -573,26 +573,26 @@ server {
 
 #### Supplier Portal Configuration
 ```bash
-sudo nano /etc/nginx/sites-available/suppliers.itsjn.com
+sudo nano /etc/nginx/sites-available/suppliers.jneoutlet.com
 ```
 
 ```nginx
 server {
     listen 80;
-    server_name suppliers.itsjn.com;
+    server_name suppliers.jneoutlet.com;
     return 301 https://$server_name$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name suppliers.itsjn.com;
+    server_name suppliers.jneoutlet.com;
 
-    root /var/www/suppliers.itsjn.com;
+    root /var/www/suppliers.jneoutlet.com;
     index index.html index.htm;
 
     # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/suppliers.itsjn.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/suppliers.itsjn.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/suppliers.jneoutlet.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/suppliers.jneoutlet.com/privkey.pem;
 
     # Security headers
     add_header X-Frame-Options DENY;
@@ -624,11 +624,11 @@ server {
 
 ```bash
 # Enable sites
-sudo ln -s /etc/nginx/sites-available/api.itsjn.com /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/itsjn.com /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/shop.itsjn.com /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/admin.itsjn.com /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/suppliers.itsjn.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/api.jneoutlet.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/jneoutlet.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/shop.jneoutlet.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/admin.jneoutlet.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/suppliers.jneoutlet.com /etc/nginx/sites-enabled/
 
 # Test Nginx configuration
 sudo nginx -t
@@ -652,7 +652,7 @@ cd mobile
 npm install
 
 # Update API endpoint for production
-# Edit src/services/apiClient.js to use https://api.itsjn.com/api
+# Edit src/services/apiClient.js to use https://api.jneoutlet.com/api
 
 # Generate release APK
 cd android
@@ -807,8 +807,8 @@ pm2 restart clothes-api
 cd ../admin-panel
 npm ci
 npm run build
-sudo cp -r build/* /var/www/admin.itsjn.com/
-sudo chown -R www-data:www-data /var/www/admin.itsjn.com
+sudo cp -r build/* /var/www/admin.jneoutlet.com/
+sudo chown -R www-data:www-data /var/www/admin.jneoutlet.com
 
 echo "Update completed successfully"
 
