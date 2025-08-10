@@ -10,9 +10,21 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          mui: ['@mui/material', '@mui/icons-material'],
+        }
+      }
+    }
   },
   define: {
     global: 'globalThis',
   },
+  optimizeDeps: {
+    include: ['@mui/material', '@mui/icons-material', 'react', 'react-dom']
+  }
 })

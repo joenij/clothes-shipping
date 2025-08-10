@@ -28,7 +28,7 @@
     "lint:customer": "cd customer-website && npm run lint",
     "build": "npm run build:backend && npm run build:admin && npm run build:customer && npm run build:supplier",
     "build:backend": "cd backend && npm run build",
-    "build:admin": "cd admin-panel && npm run build",
+    "build:admin": "npm --workspace=clothes-shipping-admin run build",
     "build:customer": "cd customer-website && npm run build",
     "build:supplier": "cd supplier-portal && npm run build",
     "build:mobile": "cd mobile && npm run android:release",
