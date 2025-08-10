@@ -1,0 +1,41 @@
+{
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "search": "Suchen"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "products": "Produkte",
+    "cart": "Warenkorb",
+    "profile": "Profil",
+    "orders": "Bestellungen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "product": {
+    "addToCart": "In den Warenkorb",
+    "price": "Preis",
+    "description": "Beschreibung",
+    "inStock": "Auf Lager",
+    "outOfStock": "Nicht verfügbar",
+    "viewDetails": "Details anzeigen"
+  },
+  "cart": {
+    "empty": "Ihr Warenkorb ist leer",
+    "subtotal": "Zwischensumme",
+    "shipping": "Versand",
+    "total": "Gesamt",
+    "checkout": "Zur Kasse",
+    "quantity": "Menge",
+    "remove": "Entfernen"
+  }
+}
