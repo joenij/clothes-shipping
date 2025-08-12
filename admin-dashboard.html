@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNE Outlet - Admin Dashboard</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://api.jneoutlet.com https://supplier.jneoutlet.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <!-- Material Design -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #1976d2; --primary-dark: #1565c0; --secondary: #9c27b0;
+            --success: #4caf50; --warning: #ff9800; --error: #f44336; --info: #2196f3;
+            --background: #f5f7fa; --surface: #ffffff; --text: #1a1a1a; --text-secondary: #666;
+            --border: #e1e5e9; --shadow: 0 2px 10px rgba(0,0,0,0.1); --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        body { font-family: 'Inter', sans-serif; background: var(--background); color: var(--text); font-size: 14px; line-height: 1.5; }
+        .app-container { display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 250px; background: var(--surface); border-right: 1px solid var(--border); position: fixed; height: 100vh; overflow-y: auto; box-shadow: var(--shadow); z-index: 100; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); background: var(--primary); color: white; }
+        .sidebar-title { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .sidebar-nav { padding: 20px 0; }
+        .nav-item { display: flex; align-items: center; padding: 12px 20px; color: var(--text); text-decoration: none; transition: all 0.2s; border: none; background: none; width: 100%; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background: rgba(25, 118, 210, 0.1); color: var(--primary); }
+        .nav-item i { margin-right: 12px; font-size: 20px; }
+        
+        .main-content { margin-left: 250px; flex: 1; padding: 20px; background: var(--background); }
+        .top-bar { background: var(--surface); padding: 15px 20px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .page-title { font-size: 24px; font-weight: 600; color: var(--text); }
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--surface); padding: 24px; border-radius: 16px; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .stat-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .stat-label { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+        .stat-change { font-size: 12px; margin-top: 4px; }
+        .stat-change.positive { color: var(--success); } .stat-change.negative { color: var(--error); }
+        
+        .chart-container { background: var(--surface); padding: 24px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 30px; }
+        .chart-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
+        
+        .table-container { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+        .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 16px; }
+        .table { width: 100%; border-collapse: collapse; }
+        .table th, .table td { padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); }
+        .table th { background: rgba(25, 118, 210, 0.05); font-weight: 600; color: var(--text); }
+        .table tbody tr:hover { background: rgba(25, 118, 210, 0.02); }
+        
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; text-transform: uppercase; }
+        .status-active { background: rgba(76, 175, 80, 0.1); color: var(--success); }
+        .status-pending { background: rgba(255, 152, 0, 0.1); color: var(--warning); }
+        .status-inactive { background: rgba(244, 67, 54, 0.1); color: var(--error); }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        
+        .hidden { display: none !important; }
+        .loading { display: flex; justify-content: center; align-items: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .login-form { background: white; padding: 40px; border-radius: 16px; box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; }
+        .login-title { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 30px; color: var(--text); }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text); }
+        .form-input { width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+        .form-input:focus { outline: none; border-color: var(--primary); }
+        
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; }
+        .alert-error { background: rgba(244, 67, 54, 0.1); color: var(--error); border: 1px solid rgba(244, 67, 54, 0.2); }
+        .alert-success { background: rgba(76, 175, 80, 0.1); color: var(--success); border: 1px solid rgba(76, 175, 80, 0.2); }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <form class="login-form" id="loginForm">
+            <h1 class="login-title">🏪 JNE Outlet Admin</h1>
+            <div id="loginError" class="alert alert-error hidden"></div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <span id="loginText">Sign In to Admin Panel</span>
+                <div id="loginSpinner" class="spinner hidden" style="width: 20px; height: 20px;"></div>
+            </button>
+            <div style="margin-top: 20px; text-align: center; color: #666; font-size: 12px;">
+                Secure authentication required • Enterprise-grade admin access
+            </div>
+        </form>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="app-container hidden">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="material-icons">store</i>
+                    JNE Outlet Admin
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard">
+                    <i class="material-icons">dashboard</i>Dashboard</button>
+                <button class="nav-item" data-page="products">
+                    <i class="material-icons">inventory</i>Products</button>
+                <button class="nav-item" data-page="orders">
+                    <i class="material-icons">shopping_cart</i>Orders</button>
+                <button class="nav-item" data-page="customers">
+                    <i class="material-icons">people</i>Customers</button>
+                <button class="nav-item" data-page="analytics">
+                    <i class="material-icons">analytics</i>Analytics</button>
+                <button class="nav-item" onclick="logout()">
+                    <i class="material-icons">logout</i>Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <div class="user-menu">
+                    <span id="userName">Admin User</span>
+                    <div class="user-avatar" id="userAvatar">AU</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--primary);" id="totalProducts">Loading...</div>
+                        <div class="stat-label">Total Products</div>
+                        <div class="stat-change positive" id="productsChange">+12% this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--success);" id="totalOrders">Loading...</div>
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-change positive" id="ordersChange">+8% this week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--warning);" id="totalRevenue">Loading...</div>
+                        <div class="stat-label">Revenue (30d)</div>
+                        <div class="stat-change positive" id="revenueChange">+15% vs last month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--info);" id="totalCustomers">Loading...</div>
+                        <div class="stat-label">Active Customers</div>
+                        <div class="stat-change positive" id="customersChange">+5% new users</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Revenue Trends (Last 30 Days)</div>
+                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">Recent Orders</div>
+                    <table class="table">
+                        <thead>
+                            <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <tr><td colspan="5" class="loading"><div class="spinner"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div id="productsPage" class="page-content hidden">
+                <div class="table-container">
+                    <div class="table-header">Product Management
+                        <button class="btn btn-primary" style="float: right;"><i class="material-icons">add</i>Add Product</button>
+                    </div>
+                    <table class="table">
+                        <thead><tr><th>Product</th><th>SKU</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="productsTable"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders Page -->
+            <div id="ordersPage" class="page-content hidden">
+                <div class="table-container">
+                    <div class="table-header">Order Management</div>
+                    <table class="table">
+                        <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                        <tbody id="ordersTable"><tr><td colspan="7" class="loading"><div class="spinner"></div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics & Other Pages -->
+            <div id="customersPage" class="page-content hidden">
+                <div class="table-container">
+                    <div class="table-header">Customer Management</div>
+                    <table class="table">
+                        <thead><tr><th>Customer</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+                        <tbody id="customersTable"><tr><td colspan="7" style="text-align: center; padding: 40px; color: #666;">Customer management features coming soon</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="analyticsPage" class="page-content hidden">
+                <div class="chart-container">
+                    <div class="chart-title">Advanced Analytics Dashboard</div>
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <i class="material-icons" style="font-size: 48px; color: var(--primary);">analytics</i>
+                        <div style="margin-top: 20px; font-size: 18px;">Advanced analytics features coming soon</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null, authToken = null;
+        const API_BASE = 'https://api.jneoutlet.com';
+
+        // Authentication
+        async function login(email, password) {
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Login failed');
+                
+                authToken = data.token;
+                currentUser = data.user;
+                localStorage.setItem('authToken', authToken);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                return { success: true, user: currentUser };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function logout() {
+            authToken = null; currentUser = null;
+            localStorage.removeItem('authToken'); localStorage.removeItem('currentUser');
+            showLogin();
+        }
+
+        function checkAuth() {
+            const savedToken = localStorage.getItem('authToken');
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedToken && savedUser) {
+                authToken = savedToken; currentUser = JSON.parse(savedUser);
+                showMainApp(); return true;
+            }
+            showLogin(); return false;
+        }
+
+        // API calls
+        async function apiCall(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
+                        ...options.headers
+                    }, ...options
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    if (response.status === 401) { logout(); return; }
+                    throw new Error(data.error || 'API request failed');
+                }
+                return data;
+            } catch (error) { console.error('API Error:', error); throw error; }
+        }
+
+        // UI functions
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            if (currentUser) {
+                document.getElementById('userName').textContent = `${currentUser.first_name} ${currentUser.last_name}`;
+                document.getElementById('userAvatar').textContent = `${currentUser.first_name[0]}${currentUser.last_name[0]}`;
+            }
+            showPage('dashboard');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`${pageId}Page`).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) item.classList.add('active');
+            });
+            const titles = { dashboard: 'Dashboard', products: 'Product Management', orders: 'Order Management', customers: 'Customer Management', analytics: 'Analytics & Reports' };
+            document.getElementById('pageTitle').textContent = titles[pageId] || pageId;
+            loadPageData(pageId);
+        }
+
+        async function loadPageData(pageId) {
+            try {
+                if (pageId === 'dashboard') await loadDashboardData();
+                else if (pageId === 'products') await loadProductsData();
+                else if (pageId === 'orders') await loadOrdersData();
+            } catch (error) { console.error('Error loading page data:', error); }
+        }
+
+        async function loadDashboardData() {
+            try {
+                const analytics = await apiCall('/api/order-management/admin/analytics');
+                if (analytics?.success) {
+                    const data = analytics.data;
+                    document.getElementById('totalProducts').textContent = data.overview?.total_orders || '0';
+                    document.getElementById('totalOrders').textContent = data.overview?.total_orders || '0';
+                    document.getElementById('totalRevenue').textContent = `€${(data.overview?.total_revenue || 0).toFixed(2)}`;
+                    document.getElementById('totalCustomers').textContent = data.customer_stats?.unique_customers || '0';
+                    setupRevenueChart(data.daily_revenue || []);
+                }
+                
+                const orders = await apiCall('/api/order-management/admin/all?limit=10');
+                if (orders?.success) displayRecentOrders(orders.data.orders);
+            } catch (error) { console.error('Error loading dashboard:', error); }
+        }
+
+        function setupRevenueChart(data) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => new Date(d.date).toLocaleDateString()),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: data.map(d => parseFloat(d.revenue || 0)),
+                        borderColor: '#1976d2',
+                        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { callback: value => '€' + value } } }
+                }
+            });
+        }
+
+        function displayRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrdersTable');
+            tbody.innerHTML = '';
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.order_number}</td>
+                    <td>${order.first_name || 'N/A'} ${order.last_name || ''}</td>
+                    <td>€${parseFloat(order.total_amount || 0).toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                    <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function loadProductsData() {
+            try {
+                const products = await apiCall('/api/admin-products/products?limit=50');
+                if (products?.success) displayProducts(products.data.products);
+            } catch (error) { console.error('Error loading products:', error); }
+        }
+
+        function displayProducts(products) {
+            const tbody = document.getElementById('productsTable');
+            tbody.innerHTML = '';
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.name?.en || product.name || 'N/A'}</td>
+                    <td>${product.sku}</td>
+                    <td>${product.category_name?.en || product.category_name || 'N/A'}</td>
+                    <td>€${parseFloat(product.base_price || 0).toFixed(2)}</td>
+                    <td>${product.stock_quantity || 0}</td>
+                    <td><span class="status-badge status-${product.status}">${product.status}</span></td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"><i class="material-icons" style="font-size: 16px;">edit</i></button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function loadOrdersData() {
+            try {
+                const orders = await apiCall('/api/order-management/admin/all?limit=50');
+                if (orders?.success) displayOrders(orders.data.orders);
+            } catch (error) { console.error('Error loading orders:', error); }
+        }
+
+        function displayOrders(orders) {
+            const tbody = document.getElementById('ordersTable');
+            tbody.innerHTML = '';
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.order_number}</td>
+                    <td>${order.first_name || 'N/A'} ${order.last_name || ''}</td>
+                    <td>${order.total_items || 0} items</td>
+                    <td>€${parseFloat(order.total_amount || 0).toFixed(2)}</td>
+                    <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+                    <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"><i class="material-icons" style="font-size: 16px;">visibility</i></button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Event listeners
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            loginText.textContent = 'Signing in...';
+            loginSpinner.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
+            
+            const result = await login(email, password);
+            if (result.success) showMainApp();
+            else { errorDiv.textContent = result.error; errorDiv.classList.remove('hidden'); }
+            
+            loginText.textContent = 'Sign In to Admin Panel';
+            loginSpinner.classList.add('hidden');
+        });
+
+        document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+            item.addEventListener('click', (e) => showPage(e.currentTarget.dataset.page));
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => checkAuth());
+    </script>
+</body>
+</html>

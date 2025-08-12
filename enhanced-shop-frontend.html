@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNE Outlet - Premium Shopping Experience</title>
+    
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://api.jneoutlet.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="JNE Outlet - Premium online shopping destination for fashion, electronics, home goods and more. Secure checkout, worldwide shipping.">
+    <meta name="keywords" content="online shopping, fashion, electronics, home, premium products, secure shopping">
+    <meta name="author" content="JNE Outlet">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="JNE Outlet - Premium Shopping Experience">
+    <meta property="og:description" content="Discover premium products at JNE Outlet. Fashion, Electronics, Home & Garden with secure checkout and worldwide shipping.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shop.jneoutlet.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: #dbeafe;
+            --secondary: #7c3aed; --accent: #f59e0b; --success: #10b981; --error: #ef4444;
+            --neutral-50: #fafafa; --neutral-100: #f5f5f5; --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4; --neutral-400: #a3a3a3; --neutral-500: #737373;
+            --neutral-600: #525252; --neutral-700: #404040; --neutral-800: #262626; --neutral-900: #171717;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1); --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--neutral-800); background: var(--neutral-50); }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        
+        /* Header */
+        .header { background: white; border-bottom: 1px solid var(--neutral-200); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+        .header-container { max-width: 1280px; margin: 0 auto; display: flex; items: center; justify-content: space-between; padding: 1rem 2rem; }
+        .logo { font-size: 2rem; font-weight: 700; color: var(--primary); text-decoration: none; font-family: 'Playfair Display', serif; }
+        .nav { display: flex; align-items: center; gap: 2rem; }
+        .nav-link { text-decoration: none; color: var(--neutral-600); font-weight: 500; transition: color 0.2s; cursor: pointer; }
+        .nav-link:hover { color: var(--primary); }
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+        .search-box { position: relative; }
+        .search-input { padding: 0.75rem 3rem 0.75rem 1rem; border: 1px solid var(--neutral-300); border-radius: 0.5rem; width: 300px; font-size: 0.875rem; }
+        .search-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .search-btn { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--neutral-500); cursor: pointer; }
+        .cart-btn { position: relative; background: var(--primary); color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; }
+        .cart-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .cart-count { position: absolute; -top: 0.25rem; -right: 0.25rem; background: var(--error); color: white; font-size: 0.75rem; padding: 0.125rem 0.375rem; border-radius: 9999px; min-width: 1.25rem; text-align: center; }
+        
+        /* Pages */
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* Home Page Styles */
+        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 6rem 0; text-align: center; }
+        .hero-container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .hero-title { font-size: 4rem; font-weight: 700; margin-bottom: 1.5rem; font-family: 'Playfair Display', serif; }
+        .hero-subtitle { font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-button { display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: var(--primary); padding: 1rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; transition: all 0.2s; box-shadow: var(--shadow); cursor: pointer; border: none; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        
+        .categories { padding: 6rem 0; background: white; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .section-title { font-size: 3rem; font-weight: 700; text-align: center; margin-bottom: 4rem; color: var(--neutral-800); font-family: 'Playfair Display', serif; }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+        .category-card { background: white; border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s; cursor: pointer; }
+        .category-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); }
+        .category-image { height: 200px; background: var(--neutral-100); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--neutral-400); }
+        .category-content { padding: 2rem; }
+        .category-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-800); }
+        .category-description { color: var(--neutral-600); margin-bottom: 1rem; }
+        .category-link { color: var(--primary); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 0.25rem; }
+        .category-link:hover { text-decoration: underline; }
+        
+        .products { padding: 6rem 0; background: var(--neutral-50); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .product-card { background: white; border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s; cursor: pointer; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .product-image { height: 250px; background: var(--neutral-100); display: flex; align-items: center; justify-content: center; color: var(--neutral-400); font-size: 3rem; background-size: cover; background-position: center; }
+        .product-content { padding: 1.5rem; }
+        .product-title { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-800); }
+        .product-price { font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; }
+        .add-to-cart { width: 100%; background: var(--primary); color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .add-to-cart:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        
+        /* Product Detail Page Styles */
+        .product-detail { padding: 2rem 0; }
+        .product-detail-container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .breadcrumb { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; font-size: 0.875rem; color: var(--neutral-600); }
+        .breadcrumb a { color: var(--primary); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-separator { color: var(--neutral-400); }
+        
+        .product-main { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+        
+        .product-images { }
+        .main-image-container { position: relative; margin-bottom: 1rem; }
+        .main-image { width: 100%; height: 500px; object-fit: cover; border-radius: 1rem; background: var(--neutral-100); }
+        .image-thumbnails { display: flex; gap: 0.5rem; overflow-x: auto; }
+        .thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: 0.5rem; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; background: var(--neutral-100); }
+        .thumbnail:hover, .thumbnail.active { opacity: 1; border: 2px solid var(--primary); }
+        
+        .product-info { }
+        .product-detail-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--neutral-800); font-family: 'Playfair Display', serif; }
+        .product-detail-price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 1.5rem; }
+        .product-description { color: var(--neutral-600); margin-bottom: 2rem; line-height: 1.8; }
+        
+        .product-variants { margin-bottom: 2rem; }
+        .variant-group { margin-bottom: 1.5rem; }
+        .variant-label { font-weight: 600; margin-bottom: 0.5rem; color: var(--neutral-800); }
+        .variant-options { display: flex; flex-wrap: gap; gap: 0.5rem; }
+        .variant-option { padding: 0.5rem 1rem; border: 2px solid var(--neutral-300); border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; background: white; }
+        .variant-option:hover { border-color: var(--primary); }
+        .variant-option.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+        .variant-option.color { width: 40px; height: 40px; border-radius: 50%; padding: 0; }
+        
+        .quantity-selector { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .quantity-label { font-weight: 600; }
+        .quantity-controls { display: flex; align-items: center; border: 2px solid var(--neutral-300); border-radius: 0.5rem; }
+        .quantity-btn { background: none; border: none; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 1.25rem; color: var(--neutral-600); }
+        .quantity-btn:hover { background: var(--neutral-100); }
+        .quantity-input { border: none; text-align: center; width: 60px; font-size: 1rem; }
+        
+        .product-actions { display: flex; gap: 1rem; margin-bottom: 3rem; }
+        .add-to-cart-detail { flex: 1; background: var(--primary); color: white; border: none; padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .add-to-cart-detail:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .wishlist-btn { background: white; border: 2px solid var(--neutral-300); padding: 1rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; }
+        .wishlist-btn:hover { border-color: var(--primary); color: var(--primary); }
+        
+        .product-specs { background: var(--neutral-50); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem; }
+        .specs-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .specs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .spec-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--neutral-200); }
+        .spec-label { font-weight: 500; color: var(--neutral-600); }
+        .spec-value { color: var(--neutral-800); }
+        
+        .related-products { margin-top: 4rem; }
+        .related-products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        
+        /* Features Section */
+        .features { padding: 6rem 0; background: white; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin-top: 3rem; }
+        .feature { text-align: center; }
+        .feature-icon { width: 4rem; height: 4rem; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary); font-size: 1.5rem; }
+        .feature-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--neutral-800); }
+        .feature-description { color: var(--neutral-600); }
+        
+        /* Footer */
+        .footer { background: var(--neutral-800); color: var(--neutral-300); padding: 4rem 0 2rem; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-section h3 { color: white; margin-bottom: 1rem; font-weight: 600; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.5rem; }
+        .footer-section ul li a { color: var(--neutral-300); text-decoration: none; transition: color 0.2s; }
+        .footer-section ul li a:hover { color: white; }
+        .footer-bottom { border-top: 1px solid var(--neutral-700); padding-top: 2rem; text-align: center; color: var(--neutral-400); }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container { padding: 1rem; }
+            .search-input { width: 200px; }
+            .hero-title { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+            .nav { display: none; }
+            .hero { padding: 4rem 0; }
+            .categories, .products, .features { padding: 4rem 0; }
+            .product-main { grid-template-columns: 1fr; gap: 2rem; }
+        }
+        
+        /* Loading States */
+        .loading { display: flex; justify-content: center; align-items: center; padding: 4rem; }
+        .spinner { width: 3rem; height: 3rem; border: 3px solid var(--neutral-200); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Cart Sidebar */
+        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: white; box-shadow: var(--shadow-xl); transition: right 0.3s; z-index: 200; }
+        .cart-sidebar.open { right: 0; }
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 150; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .cart-overlay.open { opacity: 1; visibility: visible; }
+        .cart-header { padding: 2rem; border-bottom: 1px solid var(--neutral-200); }
+        .cart-title { font-size: 1.25rem; font-weight: 600; }
+        .cart-close { float: right; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .cart-content { padding: 2rem; height: calc(100vh - 200px); overflow-y: auto; }
+        .cart-footer { padding: 2rem; border-top: 1px solid var(--neutral-200); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo" onclick="showPage('home')">JNE Outlet</a>
+            
+            <nav class="nav">
+                <a href="#" class="nav-link" onclick="showCategory('fashion')">Fashion</a>
+                <a href="#" class="nav-link" onclick="showCategory('electronics')">Electronics</a>
+                <a href="#" class="nav-link" onclick="showCategory('home')">Home & Garden</a>
+                <a href="#" class="nav-link" onclick="showCategory('sports')">Sports</a>
+            </nav>
+            
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
+                    <button class="search-btn" onclick="searchProducts()">
+                        <i class="material-icons">search</i>
+                    </button>
+                </div>
+                
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i class="material-icons">shopping_cart</i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <h1 class="hero-title">Premium Shopping Experience</h1>
+                <p class="hero-subtitle">Discover curated collections of fashion, electronics, home goods and more. Quality products, secure checkout, worldwide shipping.</p>
+                <button class="cta-button" onclick="showPage('products')">
+                    <span>Explore Products</span>
+                    <i class="material-icons">arrow_forward</i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories">
+            <div class="container">
+                <h2 class="section-title">Shop by Category</h2>
+                <div class="categories-grid">
+                    <div class="category-card" onclick="showCategory('fashion')">
+                        <div class="category-image">👔</div>
+                        <div class="category-content">
+                            <h3 class="category-title">Fashion & Apparel</h3>
+                            <p class="category-description">Premium clothing, accessories, and footwear for every style</p>
+                            <a href="#" class="category-link">Explore Fashion <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" onclick="showCategory('electronics')">
+                        <div class="category-image">📱</div>
+                        <div class="category-content">
+                            <h3 class="category-title">Electronics & Tech</h3>
+                            <p class="category-description">Latest smartphones, laptops, gadgets, and accessories</p>
+                            <a href="#" class="category-link">Shop Electronics <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" onclick="showCategory('home')">
+                        <div class="category-image">🏠</div>
+                        <div class="category-content">
+                            <h3 class="category-title">Home & Garden</h3>
+                            <p class="category-description">Furniture, decor, kitchen essentials, and garden supplies</p>
+                            <a href="#" class="category-link">Discover Home <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card" onclick="showCategory('sports')">
+                        <div class="category-image">⚽</div>
+                        <div class="category-content">
+                            <h3 class="category-title">Sports & Fitness</h3>
+                            <p class="category-description">Athletic wear, equipment, and wellness products</p>
+                            <a href="#" class="category-link">Get Active <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section class="products">
+            <div class="container">
+                <h2 class="section-title">Featured Products</h2>
+                <div class="products-grid" id="homeProductsGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Why Choose JNE Outlet?</h2>
+                <div class="features-grid">
+                    <div class="feature">
+                        <div class="feature-icon"><i class="material-icons">security</i></div>
+                        <h3 class="feature-title">Secure Shopping</h3>
+                        <p class="feature-description">Enterprise-grade security with SSL encryption and fraud protection for safe transactions</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon"><i class="material-icons">local_shipping</i></div>
+                        <h3 class="feature-title">Global Shipping</h3>
+                        <p class="feature-description">Worldwide delivery with real-time tracking and insurance coverage</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon"><i class="material-icons">support_agent</i></div>
+                        <h3 class="feature-title">24/7 Support</h3>
+                        <p class="feature-description">Round-the-clock customer service with multilingual support</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <div class="feature-icon"><i class="material-icons">verified</i></div>
+                        <h3 class="feature-title">Quality Guarantee</h3>
+                        <p class="feature-description">Premium products with manufacturer warranty and easy returns</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Products List Page -->
+    <div id="productsPage" class="page">
+        <section class="products">
+            <div class="container">
+                <h2 class="section-title" id="productsPageTitle">All Products</h2>
+                <div class="products-grid" id="productsGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Product Detail Page -->
+    <div id="productDetailPage" class="page">
+        <div class="product-detail">
+            <div class="product-detail-container">
+                <nav class="breadcrumb">
+                    <a href="#" onclick="showPage('home')">Home</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#" onclick="showPage('products')">Products</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span id="productBreadcrumb">Product</span>
+                </nav>
+
+                <div class="product-main">
+                    <div class="product-images">
+                        <div class="main-image-container">
+                            <img id="mainProductImage" class="main-image" src="" alt="Product Image">
+                        </div>
+                        <div class="image-thumbnails" id="imageThumbnails">
+                            <!-- Thumbnails will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="product-info">
+                        <h1 class="product-detail-title" id="productDetailTitle">Product Name</h1>
+                        <div class="product-detail-price" id="productDetailPrice">€0.00</div>
+                        <div class="product-description" id="productDetailDescription">Product description...</div>
+
+                        <div class="product-variants" id="productVariants">
+                            <!-- Variants will be populated by JavaScript -->
+                        </div>
+
+                        <div class="quantity-selector">
+                            <span class="quantity-label">Quantity:</span>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                <input type="number" class="quantity-input" id="productQuantity" value="1" min="1">
+                                <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <button class="add-to-cart-detail" onclick="addProductToCart()">
+                                Add to Cart
+                            </button>
+                            <button class="wishlist-btn">
+                                <i class="material-icons">favorite_border</i>
+                            </button>
+                        </div>
+
+                        <div class="product-specs" id="productSpecs">
+                            <h3 class="specs-title">Specifications</h3>
+                            <div class="specs-list" id="specsList">
+                                <!-- Specs will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="related-products">
+                    <h2 class="section-title">Related Products</h2>
+                    <div class="related-products-grid" id="relatedProductsGrid">
+                        <!-- Related products will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">GDPR</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Social Media</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 JNE Outlet. All rights reserved. Built with enterprise architecture.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3 class="cart-title">Shopping Cart</h3>
+            <button class="cart-close" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-content" id="cartContent">
+            <p style="text-align: center; color: var(--neutral-500); padding: 2rem 0;">Your cart is empty</p>
+        </div>
+        <div class="cart-footer">
+            <button class="cta-button" style="width: 100%; justify-content: center;">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let products = [];
+        let currentProduct = null;
+        let currentPage = 'home';
+        const API_BASE = 'https://api.jneoutlet.com';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            loadHomeProducts();
+        });
+
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + 'Page').classList.add('active');
+            currentPage = pageId;
+            
+            // Load page-specific data
+            if (pageId === 'products') {
+                loadAllProducts();
+            }
+        }
+
+        // API functions
+        async function apiCall(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'API request failed');
+                return data;
+            } catch (error) {
+                console.error('API Error:', error);
+                return null;
+            }
+        }
+
+        // Load products for home page
+        async function loadHomeProducts() {
+            try {
+                const response = await apiCall('/api/products?limit=6&featured=true');
+                if (response?.success) {
+                    products = response.data.products;
+                    displayProducts(products, 'homeProductsGrid');
+                } else {
+                    displaySampleProducts('homeProductsGrid');
+                }
+            } catch (error) {
+                console.error('Error loading home products:', error);
+                displaySampleProducts('homeProductsGrid');
+            }
+        }
+
+        // Load all products for products page
+        async function loadAllProducts() {
+            try {
+                const response = await apiCall('/api/products?limit=20');
+                if (response?.success) {
+                    products = response.data.products;
+                    displayProducts(products, 'productsGrid');
+                } else {
+                    displaySampleProducts('productsGrid');
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                displaySampleProducts('productsGrid');
+            }
+        }
+
+        // Load single product details
+        async function loadProductDetails(productId) {
+            try {
+                // For now, use the general products API and find the product
+                const response = await apiCall('/api/products?limit=100');
+                if (response?.success) {
+                    const product = response.data.products.find(p => p.id === productId);
+                    if (product) {
+                        currentProduct = product;
+                        displayProductDetails(product);
+                        return;
+                    }
+                }
+                throw new Error('Product not found');
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                // Show error or redirect to products page
+                showPage('products');
+            }
+        }
+
+        function displayProducts(productsToShow, containerId) {
+            const grid = document.getElementById(containerId);
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+
+            productsToShow.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.onclick = () => showProductDetail(product.id);
+                
+                // Try to get image from API or use fallback
+                const imageUrl = product.image_url || getProductImageFallback(product.category_slug || 'default');
+                
+                productCard.innerHTML = `
+                    <div class="product-image" style="background-image: url('${imageUrl}')">
+                        ${!product.image_url ? getProductIcon(product.category_slug || 'default') : ''}
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">${product.name?.en || product.name || 'Premium Product'}</h3>
+                        <div class="product-price">€${parseFloat(product.base_price || 99.99).toFixed(2)}</div>
+                        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('${product.id}', '${product.name?.en || product.name}', ${product.base_price || 99.99})">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(productCard);
+            });
+        }
+
+        function displaySampleProducts(containerId) {
+            const sampleProducts = [
+                { id: 'sample-1', name: 'Premium Fashion Jacket', base_price: 159.99, icon: '👔', category: 'fashion' },
+                { id: 'sample-2', name: 'Wireless Headphones', base_price: 249.99, icon: '🎧', category: 'electronics' },
+                { id: 'sample-3', name: 'Smart Home Speaker', base_price: 89.99, icon: '🔊', category: 'electronics' },
+                { id: 'sample-4', name: 'Designer Coffee Table', base_price: 599.99, icon: '🪑', category: 'home' },
+                { id: 'sample-5', name: 'Running Sneakers', base_price: 129.99, icon: '👟', category: 'sports' },
+                { id: 'sample-6', name: 'Kitchen Mixer Set', base_price: 199.99, icon: '🍴', category: 'home' }
+            ];
+
+            displayProducts(sampleProducts, containerId);
+        }
+
+        function showProductDetail(productId) {
+            loadProductDetails(productId);
+            showPage('productDetail');
+        }
+
+        function displayProductDetails(product) {
+            // Update breadcrumb
+            document.getElementById('productBreadcrumb').textContent = product.name?.en || product.name || 'Product';
+            
+            // Update main product info
+            document.getElementById('productDetailTitle').textContent = product.name?.en || product.name || 'Product';
+            document.getElementById('productDetailPrice').textContent = `€${parseFloat(product.base_price || 0).toFixed(2)}`;
+            document.getElementById('productDetailDescription').innerHTML = product.description?.en || product.description || 'No description available.';
+            
+            // Update main image
+            const mainImage = document.getElementById('mainProductImage');
+            const imageUrl = product.image_url || getProductImageFallback(product.category_slug || 'default');
+            mainImage.src = imageUrl;
+            mainImage.alt = product.name?.en || product.name || 'Product';
+            
+            // Generate thumbnails (for now, just show main image)
+            const thumbnailsContainer = document.getElementById('imageThumbnails');
+            thumbnailsContainer.innerHTML = `
+                <img class="thumbnail active" src="${imageUrl}" alt="Main view" onclick="setMainImage('${imageUrl}')">
+            `;
+            
+            // Update specifications
+            const specsList = document.getElementById('specsList');
+            specsList.innerHTML = `
+                <div class="spec-item">
+                    <span class="spec-label">SKU</span>
+                    <span class="spec-value">${product.sku || 'N/A'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Brand</span>
+                    <span class="spec-value">${product.brand_name || 'N/A'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Category</span>
+                    <span class="spec-value">${product.category_name?.en || product.category_name || 'N/A'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Weight</span>
+                    <span class="spec-value">${product.weight ? product.weight + ' kg' : 'N/A'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Stock</span>
+                    <span class="spec-value">${product.stock_quantity || 0} units</span>
+                </div>
+            `;
+            
+            // Clear variants for now (will be enhanced with real variant data)
+            document.getElementById('productVariants').innerHTML = '';
+            
+            // Clear related products for now
+            document.getElementById('relatedProductsGrid').innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--neutral-500);">Related products loading...</p>';
+        }
+
+        function setMainImage(imageUrl) {
+            document.getElementById('mainProductImage').src = imageUrl;
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function changeQuantity(delta) {
+            const quantityInput = document.getElementById('productQuantity');
+            const currentValue = parseInt(quantityInput.value) || 1;
+            const newValue = Math.max(1, currentValue + delta);
+            quantityInput.value = newValue;
+        }
+
+        function addProductToCart() {
+            if (!currentProduct) return;
+            
+            const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
+            const productName = currentProduct.name?.en || currentProduct.name || 'Product';
+            const price = parseFloat(currentProduct.base_price || 0);
+            
+            // Add multiple quantities
+            for (let i = 0; i < quantity; i++) {
+                addToCart(currentProduct.id, productName, price);
+            }
+            
+            // Reset quantity
+            document.getElementById('productQuantity').value = 1;
+            
+            // Show success message
+            showCartNotification(`${quantity} × ${productName} added to cart!`);
+        }
+
+        function getProductIcon(category) {
+            const icons = {
+                fashion: '👔', electronics: '📱', home: '🏠', sports: '⚽',
+                clothing: '👕', tech: '💻', furniture: '🪑', default: '📦'
+            };
+            return icons[category] || icons.default;
+        }
+
+        function getProductImageFallback(category) {
+            const fallbacks = {
+                fashion: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=600&fit=crop',
+                electronics: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=600&fit=crop',
+                home: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop',
+                sports: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
+                default: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=600&fit=crop'
+            };
+            return fallbacks[category] || fallbacks.default;
+        }
+
+        // Cart functions (existing ones remain the same)
+        function addToCart(productId, productName, price) {
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id: productId, name: productName, price, quantity: 1 });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showCartNotification(`${productName} added to cart!`);
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.querySelector('.cart-overlay');
+            const isOpen = sidebar.classList.contains('open');
+            
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('open');
+                updateCartContent();
+            }
+        }
+
+        function updateCartContent() {
+            const cartContent = document.getElementById('cartContent');
+            if (cart.length === 0) {
+                cartContent.innerHTML = '<p style="text-align: center; color: var(--neutral-500); padding: 2rem 0;">Your cart is empty</p>';
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartContent.innerHTML = `
+                ${cart.map(item => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--neutral-200);">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p style="color: var(--neutral-600);">€${item.price.toFixed(2)} x ${item.quantity}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <button onclick="updateCartQuantity('${item.id}', ${item.quantity - 1})" style="border: 1px solid var(--neutral-300); background: white; width: 2rem; height: 2rem; border-radius: 0.25rem; cursor: pointer;">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateCartQuantity('${item.id}', ${item.quantity + 1})" style="border: 1px solid var(--neutral-300); background: white; width: 2rem; height: 2rem; border-radius: 0.25rem; cursor: pointer;">+</button>
+                        </div>
+                    </div>
+                `).join('')}
+                <div style="padding: 1rem 0; font-size: 1.25rem; font-weight: 600;">
+                    Total: €${total.toFixed(2)}
+                </div>
+            `;
+        }
+
+        function updateCartQuantity(productId, newQuantity) {
+            if (newQuantity <= 0) {
+                cart = cart.filter(item => item.id !== productId);
+            } else {
+                const item = cart.find(item => item.id === productId);
+                if (item) item.quantity = newQuantity;
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            updateCartContent();
+        }
+
+        function showCartNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 100px; right: 20px; background: var(--success); color: white;
+                padding: 1rem 1.5rem; border-radius: 0.5rem; box-shadow: var(--shadow-lg);
+                z-index: 1000; transform: translateX(400px); transition: transform 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Category and search functions
+        function showCategory(category) {
+            document.getElementById('productsPageTitle').textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Products`;
+            showPage('products');
+            // TODO: Filter products by category
+            console.log(`Showing category: ${category}`);
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim()) {
+                document.getElementById('productsPageTitle').textContent = `Search Results for "${query}"`;
+                showPage('products');
+                // TODO: Search products
+                console.log(`Searching for: ${query}`);
+            }
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
